@@ -42,7 +42,7 @@ from utils.yolo_with_plugins import TrtYOLO
 
 
 variable_nano_file_path = "/home/jetson-nl1/Downloads/tensorrt_demos/variable_nano.json"
-output_video_path = "/home/jetson-nl1/Downloads/tensorrt_demos/annotated_output/output.mp4"
+output_video_path = "/home/jetson-nl1/Downloads/tensorrt_demos/annotated_output/output.avi"
 with open(variable_nano_file_path, 'r') as file:
     json_data = file.read()
 parsed_data = json.loads(json_data)
@@ -148,8 +148,8 @@ def main(_argv):
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(vid.get(cv2.CAP_PROP_FPS))
-        codec = cv2.VideoWriter_fourcc(*"mp4v")
-        out = cv2.VideoWriter(output_video_path, codec, fps, (570, 478)) #Added by Garthi
+        codec = cv2.VideoWriter_fourcc(*"MJPG")
+        out = cv2.VideoWriter(output_video_path, codec, fps, (width, height)) #Added by Garthi
 
     frame_num = 0
     countt = 0
