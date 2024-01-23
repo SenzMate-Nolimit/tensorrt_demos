@@ -51,7 +51,7 @@ sample_image = parsed_data['sample_image_1']
 
 
 flags.DEFINE_integer("category_num", 80, "number of object categories [80]")
-flags.DEFINE_string("output", None, "path to output video")
+flags.DEFINE_string("output", output_video_path, "path to output video")
 flags.DEFINE_boolean("count", False, "count objects being tracked on screen")
 
 
@@ -66,6 +66,8 @@ def draw_mask_on_frame(frame, mask_coordinates):
     pt1 = tuple(mask_coordinates[-1])  # Convert list to tuple
     pt2 = tuple(mask_coordinates[0])  # Convert list to tuple
     cv2.line(frame, pt1, pt2, (0, 255, 0), 2)
+    
+    return frame
 
 
 class RTSVideoCapture:
