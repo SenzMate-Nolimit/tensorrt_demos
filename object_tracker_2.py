@@ -51,7 +51,7 @@ sample_image = parsed_data['sample_image_2']
 
 
 flags.DEFINE_integer("category_num", 80, "number of object categories [80]")
-flags.DEFINE_string("output", None, "path to output video")
+flags.DEFINE_string("output", output_video_path, "path to output video")
 flags.DEFINE_boolean("count", False, "count objects being tracked on screen")
 
 def draw_mask_on_frame(frame, mask_coordinates):
