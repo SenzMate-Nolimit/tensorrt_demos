@@ -41,6 +41,7 @@ from utils.yolo_with_plugins import TrtYOLO
 
 
 variable_xaviar_file_path = "/home/nvidia/Downloads/tensorrt_demos/variable_xaviar.json"
+output_video_path = "/home/nvidia/Downloads/tensorrt_demos/annotated_output/output_1.mkv"
 with open(variable_xaviar_file_path, 'r') as file:
     json_data = file.read()
 parsed_data = json.loads(json_data)
@@ -52,6 +53,19 @@ sample_image = parsed_data['sample_image_1']
 flags.DEFINE_integer("category_num", 80, "number of object categories [80]")
 flags.DEFINE_string("output", None, "path to output video")
 flags.DEFINE_boolean("count", False, "count objects being tracked on screen")
+
+
+def draw_mask_on_frame(frame, mask_coordinates):
+    #Function to draw mask coordinates on the frame
+    for i in range(len(mask_coordinates) - 1):
+        pt1 = tuple(mask_coordinates[i])  # Convert list to tuple
+        pt2 = tuple(mask_coordinates[i + 1])  # Convert list to tuple
+        cv2.line(frame, pt1, pt2, (0, 255, 0), 2)  # Green color line
+    
+    # Draw the last line to connect the last point with the first point
+    pt1 = tuple(mask_coordinates[-1])  # Convert list to tuple
+    pt2 = tuple(mask_coordinates[0])  # Convert list to tuple
+    cv2.line(frame, pt1, pt2, (0, 255, 0), 2)
 
 
 class RTSVideoCapture:
@@ -88,6 +102,9 @@ class RTSVideoCapture:
     def stop(self):
         self.cap.release()
         self.stop_thread = True
+        
+    def get(self, prop):
+        return self.cap.get(prop) #Added By Garthi
 
 
 def main(_argv):
@@ -128,7 +145,7 @@ def main(_argv):
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(vid.get(cv2.CAP_PROP_FPS))
-        codec = cv2.VideoWriter_fourcc(*FLAGS.output_format)
+        codec = cv2.VideoWriter_fourcc(*"XVID")
         out = cv2.VideoWriter(FLAGS.output, codec, fps, (width, height))
 
     frame_num = 0
@@ -145,7 +162,7 @@ def main(_argv):
     count = 0
     frame = vid.read()
 
-    mask_2 = md.plot_line(frame, mask_coordinates,sample_image)
+    mask_2, edge = md.plot_line(frame, mask_coordinates,sample_image)
     print(mask_2)
   
     # Create the log file
@@ -185,6 +202,8 @@ def main(_argv):
             frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
         else:
             continue
+        
+        frame = draw_mask_on_frame(frame, edge)
 
         frame_num += 1
         print("Frame number : ",frame_num)
@@ -344,9 +363,13 @@ def main(_argv):
         result = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
 
         color = (255, 0, 0)
+        
+        with open("save_output.txt", 'r') as f:
+            timer_out = f.read()
 
         # if output flag is set, save video file
-        if FLAGS.output:
+        if FLAGS.output and timer_out:
+            print(timer_out)
             out.write(result)
 
         if cv2.waitKey(1) & 0xFF == ord("q"):
