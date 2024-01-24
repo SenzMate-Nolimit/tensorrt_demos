@@ -10,7 +10,7 @@ import sys
 
 def plot_line(frame  , mask_coordinates, sample_image):
 
-    w,h = sample_image 
+    h,w = sample_image 
     height, width = frame.shape[:2]
 
     edge_coordinates = [[int((a / w) * width), int((b / h) * height)] for a, b in mask_coordinates]
