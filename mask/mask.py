@@ -18,5 +18,5 @@ def plot_line(frame  , mask_coordinates, sample_image):
     roi_corners = np.array([edge_coordinates], dtype=np.int32)
     cv2.fillPoly(mask, roi_corners, (1))
 
-    return mask
+    return mask, edge_coordinates
 
