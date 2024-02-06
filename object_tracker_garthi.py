@@ -42,7 +42,7 @@ from utils.yolo_with_plugins import TrtYOLO
 
 
 variable_nano_file_path = "/home/jetson-nl1/Downloads/tensorrt_demos/variable_nano.json"
-output_video_path = "/home/jetson-nl1/Downloads/tensorrt_demos/annotated_output/output.avi"
+output_video_path = "/home/jetson-nl1/Downloads/tensorrt_demos/annotated_output/output.mkv"
 with open(variable_nano_file_path, 'r') as file:
     json_data = file.read()
 parsed_data = json.loads(json_data)
@@ -168,7 +168,7 @@ def main(_argv):
     count = 0
     frame = vid.read()
 
-    mask_2 = md.plot_line(frame  , mask_coordinates, sample_image)
+    mask_2, edge = md.plot_line(frame  , mask_coordinates, sample_image)
     print(mask_2)
 
     # Create the log file
@@ -217,7 +217,7 @@ def main(_argv):
         else:
             continue
 
-        frame = draw_mask_on_frame(frame, mask_coordinates)
+        frame = draw_mask_on_frame(frame, edge)
 
         frame_num += 1
         print("Frame number : ",frame_num)
