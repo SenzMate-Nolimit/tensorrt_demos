@@ -54,9 +54,7 @@ def main():
                     curr_count = int(data.split()[-2])
                     count = int(data.split()[-1])
 
-               
-                curr_count = int(data.split()[-2])
-                count = int(data.split()[-1])
+            
 
                 # add exception to pass mqtt connection issues.
                 try:
